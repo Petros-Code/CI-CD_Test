@@ -1,13 +1,86 @@
+# Nom du workflow : apparaît dans l'onglet "Actions" de GitHub
 name: cd
 
+# --- DÉCLENCHEURS (quand le workflow se lance) ---
 on:
+    # se lance à chaque push sur la branche main
     push:
         branches: [main]
+    # se lance à chaque pull request (ouverte, mise à jour...), peu importe la branche cible
     pull_request:
+    # permet de lancer le workflow manuellement depuis l'interface GitHub (bouton "Run workflow")
+    workflow_dispatch:
 
+# --- VARIABLES D'ENVIRONNEMENT GLOBALES ---
+# accessibles dans tous les jobs via ${{ env.NODE_VERSION }}
+env:
+    NODE_VERSION: "20"
+
+# --- JOBS ---
+# un workflow peut contenir plusieurs jobs, exécutés en parallèle par défaut
 jobs:
-    hello:
+    # ===== JOB 1 : build et tests =====
+    build-and-test:
+        # machine virtuelle fournie par GitHub sur laquelle le job s'exécute
         runs-on: ubuntu-latest
+
         steps:
-            - name: Afficher un message
-              run: echo "Hello from the other side !"
+            # récupère le code du repo sur la machine virtuelle (indispensable en général)
+            - name: Récupérer le code
+              uses: actions/checkout@v4
+
+            # installe Node.js à la version définie plus haut
+            - name: Installer Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: "npm" # met en cache les dépendances npm pour accélérer les prochains runs
+
+            # installe les dépendances du projet de façon reproductible (utilise package-lock.json)
+            - name: Installer les dépendances
+              run: npm ci
+
+            # vérifie le style / la qualité du code
+            - name: Linter le code
+              run: npm run lint
+
+            # exécute les tests automatisés
+            - name: Lancer les tests
+              run: npm test
+
+            # compile / build le projet (ex : génère le dossier dist/)
+            - name: Build du projet
+              run: npm run build
+
+            # sauvegarde le résultat du build pour le réutiliser dans un autre job
+            - name: Uploader l'artifact du build
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build-output
+                  path: dist/
+
+    # ===== JOB 2 : déploiement =====
+    deploy:
+        # attend que le job "build-and-test" se termine avec succès avant de démarrer
+        needs: build-and-test
+        # ne déploie que si le push a été fait sur main (évite de déployer depuis une simple pull request)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+        runs-on: ubuntu-latest
+
+        steps:
+            # récupère l'artifact généré par le job précédent
+            - name: Télécharger l'artifact du build
+              uses: actions/download-artifact@v4
+              with:
+                  name: build-output
+                  path: dist/
+
+            # exemple de déploiement : ici on affiche juste un message,
+            # en réalité on appellerait une action de déploiement (ex : vers un serveur, un bucket, Vercel, etc.)
+            - name: Déployer
+              env:
+                  # les secrets sont définis dans Settings > Secrets and variables > Actions du repo
+                  # ils ne sont jamais affichés en clair dans les logs
+                  DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+              run: echo "Déploiement en cours avec le token (masqué dans les logs)"
