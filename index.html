@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Petros — Développeur web</title>
+  <meta name="description" content="Portfolio de Petros, développeur web PHP/Symfony et TypeScript.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav-bar">
+      <a href="#top" class="logo">petros<span class="dot">.</span>dev</a>
+      <ul class="nav-links">
+        <li><a href="#apropos">à propos</a></li>
+        <li><a href="#competences">compétences</a></li>
+        <li><a href="#projets">projets</a></li>
+        <li><a href="#contact">contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Basculer le thème clair/sombre">
+        <span aria-hidden="true">◐</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <section class="hero">
+      <div class="hero-text">
+        <p class="eyebrow-code">// portfolio</p>
+        <h1>Je transforme des cahiers des charges en applications qui tournent.</h1>
+        <p class="hero-sub">Développeur web en alternance, orienté PHP/Symfony et TypeScript. Actuellement sur des projets combinant API GraphQL et interfaces React.</p>
+        <div class="hero-actions">
+          <a href="#projets" class="btn btn-primary">Voir mes projets</a>
+          <a href="#contact" class="btn btn-ghost">Me contacter</a>
+        </div>
+      </div>
+
+      <div class="editor-window" aria-hidden="true">
+        <div class="editor-titlebar">
+          <div class="editor-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="editor-filename">profil.js</span>
+        </div>
+        <div class="editor-body">
+          <pre><code><span class="ln">1</span><span class="tok-kw">const</span> <span class="tok-var">dev</span> <span class="tok-op">=</span> <span class="tok-punc">{</span>
+<span class="ln">2</span>  <span class="tok-key">nom</span><span class="tok-punc">:</span> <span class="tok-str">'Petros'</span><span class="tok-punc">,</span>
+<span class="ln">3</span>  <span class="tok-key">stack</span><span class="tok-punc">:</span> <span class="tok-punc">[</span><span class="tok-str">'PHP'</span><span class="tok-punc">,</span> <span class="tok-str">'Symfony'</span><span class="tok-punc">,</span> <span class="tok-str">'TypeScript'</span><span class="tok-punc">]</span><span class="tok-punc">,</span>
+<span class="ln">4</span>  <span class="tok-key">statut</span><span class="tok-punc">:</span> <span id="typedStatus" class="tok-str"></span><span class="typed-cursor">|</span>
+<span class="ln">5</span><span class="tok-punc">}</span><span class="tok-punc">;</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="apropos" class="section">
+      <h2 class="section-title"><span class="tag">&lt;section id="apropos"&gt;</span>À propos</h2>
+      <div class="about-grid">
+        <p>
+          Je suis développeur en alternance, préparant un titre de Concepteur Développeur d'Applications.
+          Mon quotidien : construire des fonctionnalités backend fiables et des interfaces claires,
+          en gardant un œil sur la qualité de code et les bonnes pratiques de déploiement.
+        </p>
+        <p>
+          J'aime particulièrement le moment où un projet passe du poste local à la production —
+          c'est aussi pour ça que ce portfolio existe : un terrain d'entraînement pour maîtriser
+          l'intégration et le déploiement continus avec GitHub Actions.
+        </p>
+      </div>
+    </section>
+
+    <section id="competences" class="section">
+      <h2 class="section-title"><span class="tag">&lt;section id="competences"&gt;</span>Compétences</h2>
+      <div class="imports">
+        <p class="import-line"><span class="tok-kw">import</span> <span class="tok-punc">{</span> PHP, Symfony, Laravel <span class="tok-punc">}</span> <span class="tok-kw">from</span> <span class="tok-str">'./backend'</span><span class="tok-punc">;</span></p>
+        <p class="import-line"><span class="tok-kw">import</span> <span class="tok-punc">{</span> TypeScript, React, React Native <span class="tok-punc">}</span> <span class="tok-kw">from</span> <span class="tok-str">'./frontend'</span><span class="tok-punc">;</span></p>
+        <p class="import-line"><span class="tok-kw">import</span> <span class="tok-punc">{</span> PostgreSQL, GraphQL <span class="tok-punc">}</span> <span class="tok-kw">from</span> <span class="tok-str">'./donnees'</span><span class="tok-punc">;</span></p>
+        <p class="import-line"><span class="tok-kw">import</span> <span class="tok-punc">{</span> Git, GitHub Actions, Docker <span class="tok-punc">}</span> <span class="tok-kw">from</span> <span class="tok-str">'./outils'</span><span class="tok-punc">;</span></p>
+      </div>
+    </section>
+
+    <section id="projets" class="section">
+      <h2 class="section-title"><span class="tag">&lt;section id="projets"&gt;</span>Projets</h2>
+      <div class="project-grid" id="projectGrid">
+        <!-- injecté par js/main.js -->
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <h2 class="section-title"><span class="tag">&lt;section id="contact"&gt;</span>Contact</h2>
+      <form id="contactForm" class="contact-form" novalidate>
+        <div class="form-row">
+          <label for="name">Nom</label>
+          <input type="text" id="name" name="name" placeholder="Votre nom" required>
+          <span class="field-error" id="error-name"></span>
+        </div>
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="vous@exemple.com" required>
+          <span class="field-error" id="error-email"></span>
+        </div>
+        <div class="form-row">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" placeholder="Décrivez votre projet..." required></textarea>
+          <span class="field-error" id="error-message"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer le message</button>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>// fin de fichier — <span id="year"></span> Petros. Construit en HTML, CSS et JS natifs.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
