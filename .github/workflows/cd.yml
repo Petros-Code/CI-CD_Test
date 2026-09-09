@@ -11,17 +11,13 @@ on:
     # permet de lancer le workflow manuellement depuis l'interface GitHub (bouton "Run workflow")
     workflow_dispatch:
 
-# --- VARIABLES D'ENVIRONNEMENT GLOBALES ---
-# accessibles dans tous les jobs via ${{ env.NODE_VERSION }}
-env:
-    NODE_VERSION: "20"
-
 # --- JOBS ---
 # un workflow peut contenir plusieurs jobs, exécutés en parallèle par défaut
 jobs:
-    # ===== JOB 1 : build et tests =====
+    # ===== JOB 1 : vérification =====
+    # ce projet est un site statique (HTML/CSS/JS), donc pas de build Node ici :
+    # on se contente de vérifier que les fichiers essentiels sont présents
     build-and-test:
-        # machine virtuelle fournie par GitHub sur laquelle le job s'exécute
         runs-on: ubuntu-latest
 
         steps:
@@ -29,35 +25,15 @@ jobs:
             - name: Récupérer le code
               uses: actions/checkout@v4
 
-            # installe Node.js à la version définie plus haut
-            - name: Installer Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ env.NODE_VERSION }}
-                  cache: "npm" # met en cache les dépendances npm pour accélérer les prochains runs
+            # vérifie que le point d'entrée du site existe avant d'aller plus loin
+            - name: Vérifier que index.html existe
+              run: test -f index.html
 
-            # installe les dépendances du projet de façon reproductible (utilise package-lock.json)
-            - name: Installer les dépendances
-              run: npm ci
-
-            # vérifie le style / la qualité du code
-            - name: Linter le code
-              run: npm run lint
-
-            # exécute les tests automatisés
-            - name: Lancer les tests
-              run: npm test
-
-            # compile / build le projet (ex : génère le dossier dist/)
-            - name: Build du projet
-              run: npm run build
-
-            # sauvegarde le résultat du build pour le réutiliser dans un autre job
-            - name: Uploader l'artifact du build
-              uses: actions/upload-artifact@v4
-              with:
-                  name: build-output
-                  path: dist/
+            # place ici à l'avenir un vrai outil si besoin, ex :
+            # - un linter HTML (ex: htmlhint)
+            # - des tests end-to-end (ex: Playwright/Cypress)
+            - name: Étape de test (placeholder)
+              run: echo "Aucun test automatisé pour le moment"
 
     # ===== JOB 2 : déploiement =====
     deploy:
@@ -69,18 +45,11 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            # récupère l'artifact généré par le job précédent
-            - name: Télécharger l'artifact du build
-              uses: actions/download-artifact@v4
-              with:
-                  name: build-output
-                  path: dist/
+            - name: Récupérer le code
+              uses: actions/checkout@v4
 
             # exemple de déploiement : ici on affiche juste un message,
-            # en réalité on appellerait une action de déploiement (ex : vers un serveur, un bucket, Vercel, etc.)
+            # en réalité on utiliserait par exemple actions/deploy-pages pour GitHub Pages,
+            # ou une action vers Netlify/Vercel/un serveur FTP/SSH, etc.
             - name: Déployer
-              env:
-                  # les secrets sont définis dans Settings > Secrets and variables > Actions du repo
-                  # ils ne sont jamais affichés en clair dans les logs
-                  DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
-              run: echo "Déploiement en cours avec le token (masqué dans les logs)"
+              run: echo "Déploiement du site statique en cours..."
